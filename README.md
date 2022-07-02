@@ -4,6 +4,8 @@
 
 
 ##ex) transpose implementation with
+
+<pre>
 <code>
 >  for (unsigned int i = 0; i < numRows; i++)
 >  {
@@ -13,10 +15,11 @@
 >  	}
 >  }
 </code>
-
+</pre>
 
 ##ex) matrix multiplication with
 
+<pre>
 <code>
 >  for (unsigned int row = 0; row < numRows; row++) {
 >  		for (unsigned int col = 0; col < ref.numCols; col++) {
@@ -26,3 +29,4 @@
 >  		}
 >  }
 </code>
+</pre>
