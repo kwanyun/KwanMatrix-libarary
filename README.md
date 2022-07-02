@@ -3,7 +3,7 @@
 
 
 
-##ex) transpose implementation with
+##ex) transpose implementation
 
 <pre>
 <code>
@@ -17,7 +17,7 @@ for (unsigned int i = 0; i < numRows; i++)
 </code>
 </pre>
 
-##ex) matrix multiplication with
+##ex) matrix multiplication
 
 <pre>
 <code>
