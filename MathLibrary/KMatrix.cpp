@@ -149,6 +149,50 @@ KwanMat& KwanMat::operator*(const KwanMat& ref)
 }
 
 
+float KwanMat::Det()
+{
+	if (IsSquare(*this))
+		return false;
+
+	float det = 0;
+	//Laplace expansion
+	if (numRows == 1) return matNums[0];
+	else if (numRows == 2)
+	{
+		return matNums[0] * matNums[3] - matNums[1] * matNums[2];
+	}
+	else if (numRows == 3)
+	{
+		return matNums[0] * (matNums[4] * matNums[8] - matNums[5] * matNums[7])
+			- matNums[1] * (matNums[3] * matNums[8] - matNums[5] * matNums[6])
+			+ matNums[2] * (matNums[3] * matNums[7] - matNums[4] * matNums[6]);
+	}
+}
+
+KwanMat& KwanMat::Inverse()
+{
+	float det = KwanMat::Det();
+	if (det == 0) {
+		throw std::runtime_error("Determinant is 0 or matrix is not square");
+	}
+	float dInv = 1 / det;
+	
+	if (numRows == 1) {
+		matNums[0] = dInv;
+	}
+	else if (numRows == 2)
+	{
+		float arr[4] = { matNums[0],matNums[1], matNums[2], matNums[3] };
+		matNums[0] = matNums[3] / dInv;
+		matNums[1] = -matNums[1] / dInv;
+		matNums[2] = -matNums[2] / dInv;
+		matNums[3] = matNums[3] / dInv;
+	}
+	return *this;
+}
+
+
+
 int KwanMat::getRowSize()
 {
 	return numRows;
@@ -159,17 +203,14 @@ int KwanMat::getColumnSize()
 	return numCols;
 }
 
-/// <summary>
-/// Functions
-/// </summary>
+
 KwanMat& Identity(const unsigned int len)
 {
 	KwanMat* theMat = new KwanMat(len, len, 0);
 
-	for (unsigned int i = 0; i < len * len; i++)
+	for (unsigned int i = 0; i < len; i++)
 	{
-		if (i / len == i % len)
-			theMat->matNums[i] = 1;
+		theMat->matNums[i*len+i] = 1;
 	}
 	return *theMat;
 }
@@ -179,3 +220,26 @@ KwanMat& Zero(const unsigned int N, const unsigned int M)
 	KwanMat* theMat = new KwanMat(N, M, 0);
 	return *theMat;
 }
+
+bool IsSquare(const KwanMat& mat)
+{
+	if (mat.numCols != mat.numRows) return false;
+	else return true;
+}
+
+bool IsSymmetric(const KwanMat& mat)
+{
+	if(!IsSquare(mat))
+		return false;
+
+	int len = mat.numRows;
+	for (unsigned int i = 0; i <= len/2; i++)
+	{
+		for (unsigned int j = 0; j <= len/2; j++)
+		{
+			if (mat.matNums[i * len + j] != mat.matNums[j * len + i]) return false;
+		}
+	}
+	return true;
+}
+

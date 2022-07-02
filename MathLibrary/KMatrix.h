@@ -7,7 +7,6 @@
 #endif
 
 
-
 extern "C" class MATRIXLIBRARY_API KwanMat {
 private:
 
@@ -35,6 +34,11 @@ public:
     KwanMat& operator-(const KwanMat& ref);
     KwanMat& operator*(const KwanMat& ref);
 
+    //for advanced calculations
+    //Calcualte determinant with Laplace expansion for genenral size of square matrice for less than 4
+    float Det();
+    KwanMat& Inverse();
+
     //Deprecated
     int getRowSize();
     int getColumnSize();
@@ -44,4 +48,8 @@ public:
 extern "C" MATRIXLIBRARY_API KwanMat & Identity(const unsigned int len);
 
 extern "C" MATRIXLIBRARY_API KwanMat & Zero(const unsigned int N, const unsigned int M);
+
+extern "C" MATRIXLIBRARY_API bool IsSquare(const KwanMat & mat);
+
+extern "C" MATRIXLIBRARY_API bool IsSymmetric(const KwanMat & mat);
 
