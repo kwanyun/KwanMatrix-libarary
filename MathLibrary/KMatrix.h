@@ -6,16 +6,19 @@
 #define MATRIXLIBRARY_API __declspec(dllimport)
 #endif
 
+
 namespace KMath {
 
-    class MATRIXLIBRARY_API Mat {
+    extern "C" class MATRIXLIBRARY_API Mat {
     private:
-        unsigned int N, M;
+        
     public:
-        float** matNums;
+        float* matNums;
+        unsigned int N, M;
 
-        Mat(const int rows, const int cols, void* matrices) : N(rows), M(cols), matNums((float**)matrices) {};
-        //~Mat();
+        Mat(const int rows, const int cols, float matrices[]);
+        ~Mat();
+
         //uniform calculation of float
         void add(const float value);
         void sub(const float value);
@@ -23,19 +26,26 @@ namespace KMath {
         void div(const float value);
 
         //outer product
-        Mat& MatMul(const Mat& ref);
+        Mat& MatMul(Mat& ref);
+
+        //transpose
+        Mat& T();
 
         //memberwise calculation
         Mat& operator+(const Mat& ref);
-        //Mat& operator-(const Mat& ref);
-        //Mat& operator*(const Mat& ref);
+        Mat& operator-(const Mat& ref);
+        Mat& operator*(const Mat& ref);
 
+        //Deprecated
         int getRowSize();
         int getColumnSize();
 
     };
 
-    extern "C" MATRIXLIBRARY_API Mat & I(const unsigned int len);
+    extern "C" MATRIXLIBRARY_API Mat & Identity(const unsigned int len);
 
     extern "C" MATRIXLIBRARY_API Mat & Zero(const unsigned int N, const unsigned int M);
+
+    extern "C" MATRIXLIBRARY_API void CopyArr(float start[], float dest[], unsigned int size);
+
 }

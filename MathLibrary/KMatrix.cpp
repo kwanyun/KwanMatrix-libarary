@@ -1,16 +1,35 @@
-// MathLibrary.cpp : Defines the exported functions for the DLL.
-#include "pch.h" // use stdafx.h in Visual Studio 2017 and earlier
-#include <utility>
-#include <limits.h>
+// Kmatrhix.cpp : Defines the exported functions for the DLL.
+// Originally made by Kwan Yun.
+#include "pch.h"
 #include "KMatrix.h"
-#include <stdexcept>
 
 namespace KMath {
+	//initialize. get 1D array and
+	Mat::Mat(const int rows, const int cols, float matrices[]) : N(rows), M(cols) 
+	{
+		matNums = new float[N * M];
+		if (matrices == 0)
+		{
+			matNums = { 0 };
+		}
+		else
+		{
+			for (unsigned int i = 0; i < N * M; i++)
+				matNums[i] = matrices[i];
+		}
+	};
+
+	Mat::~Mat() 
+	{
+		delete[] matNums; 
+	};
+
+
 	void Mat::add(const float value)
 	{
 		for (unsigned int i = 0; i < N * M; i++)
 		{
-			matNums[i % M][i / M] += value;
+			matNums[i] += value;
 		}
 	}
 
@@ -18,7 +37,7 @@ namespace KMath {
 	{
 		for (unsigned int i = 0; i < N * M; i++)
 		{
-			matNums[i % M][i / M] -= value;
+			matNums[i] -= value;
 		}
 	}
 
@@ -26,7 +45,7 @@ namespace KMath {
 	{
 		for (unsigned int i = 0; i < N * M; i++)
 		{
-			matNums[i % M][i / M] *= value;
+			matNums[i] *= value;
 		}
 	}
 
@@ -39,12 +58,12 @@ namespace KMath {
 
 		for (unsigned int i = 0; i < N * M; i++)
 		{
-			matNums[i % M][i / M] /= value;
+			matNums[i] /= value;
 		}
 	}
 
 
-	Mat& Mat::MatMul(const Mat& ref)
+	Mat& Mat::MatMul(Mat& ref)
 	{
 		if (M != ref.N)
 		{
@@ -53,16 +72,39 @@ namespace KMath {
 
 		Mat& theMat = Zero(N, ref.M);
 
-		for (unsigned int row = 0; N < 3; row++) {
+		for (unsigned int row = 0; row < N; row++) {
 			for (unsigned int col = 0; col < ref.M; col++) {
 				// Multiply the row of A by the column of B to get the row, column of product.
-				for (int inner = 0; inner < M; inner++) {
-					theMat.matNums[row][col] += matNums[row][inner] * ref.matNums[inner][col];
+				for (unsigned int inner = 0; inner < M; inner++) {
+					theMat.matNums[row*ref.M+col] += matNums[row*M+inner] * ref.matNums[inner*ref.M+col];
 				}
 			}
 		}
 		return theMat;
 	}
+	
+	Mat& Mat::T()
+	{
+		//copy temporally
+		float* tempNums = new float[N*M];
+		for (unsigned int i = 0; i < N * M; i++)
+			tempNums[i] = matNums[i];
+		for (unsigned int i = 0; i < N; i++)
+		{
+			for (unsigned int j = 0; j < M; j++)
+			{
+				matNums[i*M+j] = tempNums[j * M + i];
+			}
+		}
+		delete[] tempNums;
+
+		int tempN = N;
+		N = M;
+		M = tempN;
+
+		return *this;
+	}
+
 
 	Mat& Mat::operator+(const Mat& ref)
 	{
@@ -73,10 +115,39 @@ namespace KMath {
 
 		for (unsigned int i = 0; i < N * M; i++)
 		{
-			matNums[i % M][i / M] += ref.matNums[i % M][i / M];
+			matNums[i] += ref.matNums[i];
 		}
 		return *this;
 	}
+
+	Mat& Mat::operator-(const Mat& ref)
+	{
+		if (N != ref.N || M != ref.M)
+		{
+			throw std::out_of_range("Size should be Same for + operation");
+		}
+
+		for (unsigned int i = 0; i < N * M; i++)
+		{
+			matNums[i] -= ref.matNums[i];
+		}
+		return *this;
+	}
+
+	Mat& Mat::operator*(const Mat& ref)
+	{
+		if (N != ref.N || M != ref.M)
+		{
+			throw std::out_of_range("Size should be Same for + operation");
+		}
+
+		for (unsigned int i = 0; i < N * M; i++)
+		{
+			matNums[i] *= ref.matNums[i];
+		}
+		return *this;
+	}
+
 
 	int Mat::getRowSize()
 	{
@@ -88,24 +159,17 @@ namespace KMath {
 		return M;
 	}
 
-
-
-
-
-
 	/// <summary>
 	/// Functions
 	/// </summary>
-	Mat& I(const unsigned int len)
+	Mat& Identity(const unsigned int len)
 	{
 		Mat* theMat = new Mat(len, len, 0);
 
 		for (unsigned int i = 0; i < len * len; i++)
 		{
 			if (i / len == i % len)
-				theMat->matNums[i][i] = 1;
-			else
-				theMat->matNums[i][i] = 0;
+				theMat->matNums[i] = 1;
 		}
 		return *theMat;
 	}
@@ -113,14 +177,12 @@ namespace KMath {
 	Mat& Zero(const unsigned int N, const unsigned int M)
 	{
 		Mat* theMat = new Mat(N, M, 0);
-		for (unsigned int i = 0; i < M; i++)
-		{
-			for (unsigned int j = 0; j < N; j++)
-			{
-				theMat->matNums[i][j] = 0;
-			}
-		}
 		return *theMat;
 	}
 
+	void CopyArr(float start[], float dest[],unsigned int size)
+	{
+		for (unsigned int i = 0; i < size; i++)
+			dest[i] = start[i];
+	}
 }
