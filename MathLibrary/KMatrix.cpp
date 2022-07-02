@@ -180,7 +180,7 @@ KwanMat& KwanMat::Inverse()
 	if (numRows == 1) {
 		matNums[0] = dInv;
 	}
-	else if (numRows == 2)
+	else
 	{
 		float arr[4] = { matNums[0],matNums[1], matNums[2], matNums[3] };
 		matNums[0] = matNums[3] / dInv;
