@@ -7,45 +7,41 @@
 #endif
 
 
-namespace KMath {
 
-    extern "C" class MATRIXLIBRARY_API Mat {
-    private:
-        
-    public:
-        float* matNums;
-        unsigned int N, M;
+extern "C" class MATRIXLIBRARY_API KwanMat {
+private:
 
-        Mat(const int rows, const int cols, float matrices[]);
-        ~Mat();
+public:
+    float* matNums;
+    unsigned int numRows, numCols;
 
-        //uniform calculation of float
-        void add(const float value);
-        void sub(const float value);
-        void mul(const float value);
-        void div(const float value);
+    KwanMat(const int rows, const int cols, float matrices[]);
+    ~KwanMat();
 
-        //outer product
-        Mat& MatMul(Mat& ref);
+    //uniform calculation of float
+    void add(const float value);
+    void sub(const float value);
+    void mul(const float value);
+    void div(const float value);
 
-        //transpose
-        Mat& T();
+    //outer product
+    KwanMat& MatMul(KwanMat& ref);
 
-        //memberwise calculation
-        Mat& operator+(const Mat& ref);
-        Mat& operator-(const Mat& ref);
-        Mat& operator*(const Mat& ref);
+    //transpose
+    KwanMat& T();
 
-        //Deprecated
-        int getRowSize();
-        int getColumnSize();
+    //memberwise calculation
+    KwanMat& operator+(const KwanMat& ref);
+    KwanMat& operator-(const KwanMat& ref);
+    KwanMat& operator*(const KwanMat& ref);
 
-    };
+    //Deprecated
+    int getRowSize();
+    int getColumnSize();
 
-    extern "C" MATRIXLIBRARY_API Mat & Identity(const unsigned int len);
+};
 
-    extern "C" MATRIXLIBRARY_API Mat & Zero(const unsigned int N, const unsigned int M);
+extern "C" MATRIXLIBRARY_API KwanMat & Identity(const unsigned int len);
 
-    extern "C" MATRIXLIBRARY_API void CopyArr(float start[], float dest[], unsigned int size);
+extern "C" MATRIXLIBRARY_API KwanMat & Zero(const unsigned int N, const unsigned int M);
 
-}

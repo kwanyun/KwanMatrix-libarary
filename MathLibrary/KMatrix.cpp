@@ -3,186 +3,179 @@
 #include "pch.h"
 #include "KMatrix.h"
 
-namespace KMath {
-	//initialize. get 1D array and
-	Mat::Mat(const int rows, const int cols, float matrices[]) : N(rows), M(cols) 
-	{
-		matNums = new float[N * M];
-		if (matrices == 0)
-		{
-			matNums = { 0 };
-		}
-		else
-		{
-			for (unsigned int i = 0; i < N * M; i++)
-				matNums[i] = matrices[i];
-		}
-	};
 
-	Mat::~Mat() 
+//initialize. get 1D array and
+KwanMat::KwanMat(const int rows, const int cols, float matrices[]) : numRows(rows), numCols(cols) 
+{
+	matNums = new float[numRows * numCols];
+	if (matrices == 0)
 	{
-		delete[] matNums; 
-	};
+		for (unsigned int i = 0; i < numRows * numCols; i++)
+			matNums[i] = 0;
+	}
+	else
+	{
+		for (unsigned int i = 0; i < numRows * numCols; i++)
+			matNums[i] = matrices[i];
+	}
+};
+
+KwanMat::~KwanMat() 
+{
+	delete[] matNums; 
+};
 
 
-	void Mat::add(const float value)
+void KwanMat::add(const float value)
+{
+	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
-		for (unsigned int i = 0; i < N * M; i++)
-		{
-			matNums[i] += value;
-		}
+		matNums[i] += value;
+	}
+}
+
+void KwanMat::sub(const float value)
+{
+	for (unsigned int i = 0; i < numRows * numCols; i++)
+	{
+		matNums[i] -= value;
+	}
+}
+
+void KwanMat::mul(const float value)
+{
+	for (unsigned int i = 0; i < numRows * numCols; i++)
+	{
+		matNums[i] *= value;
+	}
+}
+
+void KwanMat::div(const float value)
+{
+	if (value == 0)
+	{
+		throw std::overflow_error("Divide by zero exception");
 	}
 
-	void Mat::sub(const float value)
+	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
-		for (unsigned int i = 0; i < N * M; i++)
-		{
-			matNums[i] -= value;
-		}
+		matNums[i] /= value;
+	}
+}
+
+
+KwanMat& KwanMat::MatMul(KwanMat& ref)
+{
+	if (numCols != ref.numRows)
+	{
+		throw std::out_of_range("Matrix multiplication should match the size");
 	}
 
-	void Mat::mul(const float value)
-	{
-		for (unsigned int i = 0; i < N * M; i++)
-		{
-			matNums[i] *= value;
-		}
-	}
+	KwanMat& theMat = Zero(numRows, ref.numCols);
 
-	void Mat::div(const float value)
-	{
-		if (value == 0)
-		{
-			throw std::overflow_error("Divide by zero exception");
-		}
-
-		for (unsigned int i = 0; i < N * M; i++)
-		{
-			matNums[i] /= value;
-		}
-	}
-
-
-	Mat& Mat::MatMul(Mat& ref)
-	{
-		if (M != ref.N)
-		{
-			throw std::out_of_range("Matrix multiplication should match the size");
-		}
-
-		Mat& theMat = Zero(N, ref.M);
-
-		for (unsigned int row = 0; row < N; row++) {
-			for (unsigned int col = 0; col < ref.M; col++) {
-				// Multiply the row of A by the column of B to get the row, column of product.
-				for (unsigned int inner = 0; inner < M; inner++) {
-					theMat.matNums[row*ref.M+col] += matNums[row*M+inner] * ref.matNums[inner*ref.M+col];
-				}
+	for (unsigned int row = 0; row < numRows; row++) {
+		for (unsigned int col = 0; col < ref.numCols; col++) {
+			for (unsigned int inner = 0; inner < numCols; inner++) {
+				theMat.matNums[row*ref.numCols+col] += matNums[row*numCols+inner] * ref.matNums[inner*ref.numCols+col];
 			}
 		}
-		return theMat;
 	}
-	
-	Mat& Mat::T()
+	return theMat;
+}
+
+KwanMat& KwanMat::T()
+{
+	//copy temporally
+	float* tempNums = new float[numRows*numCols];
+	for (unsigned int i = 0; i < numRows * numCols; i++)
+		tempNums[i] = matNums[i];
+	for (unsigned int i = 0; i < numRows; i++)
 	{
-		//copy temporally
-		float* tempNums = new float[N*M];
-		for (unsigned int i = 0; i < N * M; i++)
-			tempNums[i] = matNums[i];
-		for (unsigned int i = 0; i < N; i++)
+		for (unsigned int j = 0; j < numCols; j++)
 		{
-			for (unsigned int j = 0; j < M; j++)
-			{
-				matNums[i*M+j] = tempNums[j * M + i];
-			}
+			matNums[i*numCols+j] = tempNums[j * numCols + i];
 		}
-		delete[] tempNums;
-
-		int tempN = N;
-		N = M;
-		M = tempN;
-
-		return *this;
 	}
+	delete[] tempNums;
+
+	int tempN = numRows;
+	numRows = numCols;
+	numCols = tempN;
+
+	return *this;
+}
 
 
-	Mat& Mat::operator+(const Mat& ref)
+KwanMat& KwanMat::operator+(const KwanMat& ref)
+{
+	if (numRows != ref.numRows || numCols != ref.numCols)
 	{
-		if (N != ref.N || M != ref.M)
-		{
-			throw std::out_of_range("Size should be Same for + operation");
-		}
-
-		for (unsigned int i = 0; i < N * M; i++)
-		{
-			matNums[i] += ref.matNums[i];
-		}
-		return *this;
+		throw std::out_of_range("Size should be Same for + operation");
 	}
 
-	Mat& Mat::operator-(const Mat& ref)
+	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
-		if (N != ref.N || M != ref.M)
-		{
-			throw std::out_of_range("Size should be Same for + operation");
-		}
-
-		for (unsigned int i = 0; i < N * M; i++)
-		{
-			matNums[i] -= ref.matNums[i];
-		}
-		return *this;
+		matNums[i] += ref.matNums[i];
 	}
+	return *this;
+}
 
-	Mat& Mat::operator*(const Mat& ref)
+KwanMat& KwanMat::operator-(const KwanMat& ref)
+{
+	if (numRows != ref.numRows || numCols != ref.numCols)
 	{
-		if (N != ref.N || M != ref.M)
-		{
-			throw std::out_of_range("Size should be Same for + operation");
-		}
-
-		for (unsigned int i = 0; i < N * M; i++)
-		{
-			matNums[i] *= ref.matNums[i];
-		}
-		return *this;
+		throw std::out_of_range("Size should be Same for + operation");
 	}
 
-
-	int Mat::getRowSize()
+	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
-		return N;
+		matNums[i] -= ref.matNums[i];
 	}
+	return *this;
+}
 
-	int Mat::getColumnSize()
+KwanMat& KwanMat::operator*(const KwanMat& ref)
+{
+	if (numRows != ref.numRows || numCols != ref.numCols)
 	{
-		return M;
+		throw std::out_of_range("Size should be Same for + operation");
 	}
 
-	/// <summary>
-	/// Functions
-	/// </summary>
-	Mat& Identity(const unsigned int len)
+	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
-		Mat* theMat = new Mat(len, len, 0);
-
-		for (unsigned int i = 0; i < len * len; i++)
-		{
-			if (i / len == i % len)
-				theMat->matNums[i] = 1;
-		}
-		return *theMat;
+		matNums[i] *= ref.matNums[i];
 	}
+	return *this;
+}
 
-	Mat& Zero(const unsigned int N, const unsigned int M)
+
+int KwanMat::getRowSize()
+{
+	return numRows;
+}
+
+int KwanMat::getColumnSize()
+{
+	return numCols;
+}
+
+/// <summary>
+/// Functions
+/// </summary>
+KwanMat& Identity(const unsigned int len)
+{
+	KwanMat* theMat = new KwanMat(len, len, 0);
+
+	for (unsigned int i = 0; i < len * len; i++)
 	{
-		Mat* theMat = new Mat(N, M, 0);
-		return *theMat;
+		if (i / len == i % len)
+			theMat->matNums[i] = 1;
 	}
+	return *theMat;
+}
 
-	void CopyArr(float start[], float dest[],unsigned int size)
-	{
-		for (unsigned int i = 0; i < size; i++)
-			dest[i] = start[i];
-	}
+KwanMat& Zero(const unsigned int N, const unsigned int M)
+{
+	KwanMat* theMat = new KwanMat(N, M, 0);
+	return *theMat;
 }
