@@ -1,8 +1,8 @@
 ﻿  KMatrix.cpp
 C:\Users\kwan\source\repos\MathLibrary\MathLibrary\KMatrix.cpp(72,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
 C:\Users\kwan\source\repos\MathLibrary\MathLibrary\KMatrix.cpp(73,21): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\kwan\source\repos\MathLibrary\MathLibrary\KMatrix.cpp(228,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\kwan\source\repos\MathLibrary\MathLibrary\KMatrix.cpp(230,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\kwan\source\repos\MathLibrary\MathLibrary\KMatrix.cpp(279,29): warning C4018: '<=': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\kwan\source\repos\MathLibrary\MathLibrary\KMatrix.cpp(281,30): warning C4018: '<=': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\kwan\source\repos\MathLibrary\MathLibrary\KMatrix.cpp(231,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\kwan\source\repos\MathLibrary\MathLibrary\KMatrix.cpp(313,29): warning C4018: '<=': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\kwan\source\repos\MathLibrary\MathLibrary\KMatrix.cpp(315,30): warning C4018: '<=': signed 또는 unsigned가 일치하지 않습니다.
+     C:\Users\kwan\source\repos\MathLibrary\Debug\MathLibrary.lib 라이브러리 및 C:\Users\kwan\source\repos\MathLibrary\Debug\MathLibrary.exp 개체를 생성하고 있습니다.
   MathLibrary.vcxproj -> C:\Users\kwan\source\repos\MathLibrary\Debug\MathLibrary.dll

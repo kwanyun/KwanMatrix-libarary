@@ -264,6 +264,40 @@ KwanMat& Zero(const unsigned int N, const unsigned int M)
 	return *theMat;
 }
 
+KwanMat& Rotation2D(const float theta)
+{
+	float c = static_cast<float>(cos(theta));
+	float s = static_cast<float>(sin(theta));
+	float rotArr[4] = { c,-s,s,c };
+	KwanMat* rotMat = new KwanMat(2, 2, rotArr);
+	return *rotMat;
+}
+
+KwanMat& Rotation3D(const float theta,const char axis)
+{
+	float c = static_cast<float>(cos(theta));
+	float s = static_cast<float>(sin(theta));
+	float rotArr[9];
+	if (axis == 'x' || axis == '0')
+	{
+		float rotArr[9] = {1,0,0,0, c,-s,0,s,c };
+	}
+	else if (axis == 'y' || axis == '1')
+	{
+		float rotArr[9] = { c,0,s,0,1,0,-s,0,c};
+	}
+	else if (axis == 'z' || axis == '2')
+	{
+		float rotArr[9] = { c,-s,0,s,c,0,0,0,1 };
+	}
+	else
+	{
+		throw std::out_of_range("axis should be x,y or z");
+	}
+	KwanMat* rotMat = new KwanMat(2, 2, rotArr);
+	return *rotMat;
+}
+
 bool IsSquare(const KwanMat& mat)
 {
 	if (mat.numCols != mat.numRows) return false;
@@ -285,4 +319,3 @@ bool IsSymmetric(const KwanMat& mat)
 	}
 	return true;
 }
-

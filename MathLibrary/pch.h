@@ -7,5 +7,6 @@
 // add headers here for precompiled
 #include "framework.h"
 #include <stdexcept>
+#include <cmath>
 
 #endif //PCH_H

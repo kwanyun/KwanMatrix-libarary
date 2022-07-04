@@ -7,7 +7,7 @@
 #endif
 
 
-extern "C" class MATRIXLIBRARY_API KwanMat {
+class MATRIXLIBRARY_API KwanMat {
 private:
     float RecursiveDet(const float mat[25], const int n);
     void Cofactor(const float M[25], float t[16], int p, int q, int n);
@@ -47,11 +47,15 @@ public:
 
 };
 
-extern "C" MATRIXLIBRARY_API KwanMat & Identity(const unsigned int len);
+MATRIXLIBRARY_API KwanMat & Identity(const unsigned int len);
 
-extern "C" MATRIXLIBRARY_API KwanMat & Zero(const unsigned int N, const unsigned int M);
+MATRIXLIBRARY_API KwanMat & Zero(const unsigned int N, const unsigned int M);
 
-extern "C" MATRIXLIBRARY_API bool IsSquare(const KwanMat & mat);
+MATRIXLIBRARY_API KwanMat & Rotation2D(const float theta);
 
-extern "C" MATRIXLIBRARY_API bool IsSymmetric(const KwanMat & mat);
+MATRIXLIBRARY_API KwanMat & Rotation3D(const float theta,const char axis);
+
+MATRIXLIBRARY_API bool IsSquare(const KwanMat & mat);
+
+MATRIXLIBRARY_API bool IsSymmetric(const KwanMat & mat);
 
