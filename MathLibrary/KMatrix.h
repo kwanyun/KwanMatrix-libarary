@@ -9,7 +9,9 @@
 
 extern "C" class MATRIXLIBRARY_API KwanMat {
 private:
-
+    float RecursiveDet(const float mat[25], const int n);
+    void Cofactor(const float M[25], float t[16], int p, int q, int n);
+    void ADJ(float M[25], float adj[25]);
 public:
     float* matNums;
     unsigned int numRows, numCols;
@@ -35,8 +37,8 @@ public:
     KwanMat& operator*(const KwanMat& ref);
 
     //for advanced calculations
-    //Calcualte determinant with Laplace expansion for genenral size of square matrice for less than 4
-    float Det();
+    //Calcualte determinant with Laplace expansion for genenral size of square matrice for less than 6
+    float DET();
     KwanMat& Inverse();
 
     //Deprecated

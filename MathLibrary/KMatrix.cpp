@@ -25,6 +25,61 @@ KwanMat::~KwanMat()
 	delete[] matNums; 
 };
 
+float KwanMat::RecursiveDet(const float mat[25], const int n)
+{
+	float det = 0;
+	float submatrix[25];
+	if (n == 2)
+		return mat[0] * mat[3] - mat[1] * mat[2];
+	else {
+		for (int x = 0; x < n; x++) {
+			int subi = 0;
+			for (int i = 1; i < n; i++) {
+				int subj = 0;
+				for (int j = 0; j < n; j++) {
+					if (j == x)
+						continue;
+					submatrix[subi*(n-1)+subj] = mat[i*n+j];
+					subj++;
+				}
+				subi++;
+			}
+			det += x % 2 ? -mat[x] * RecursiveDet(submatrix, n - 1) : mat[x] * RecursiveDet(submatrix, n - 1);
+			//det = det + (pow(-1, x) * mat[x] * RecursiveDet(submatrix, n - 1));
+		}
+	}
+	return det;
+}
+
+void KwanMat::Cofactor(const float M[25],float t[16],int p,int q, int n)
+{
+	int i = 0, j = 0;
+	for (int r = 0; r < n; r++) {
+		for (int c = 0; c < n; c++) //Copy only those elements which are not in given row r and column c
+			if (r != p && c != q) {
+				t[i*(n-1)+j++] = M[r*n+c]; //If row is filled increase r index and reset c index
+				if (j == n - 1) {
+					j = 0; i++;
+				}
+			}
+	}
+}
+
+void KwanMat::ADJ(float M[25], float adj[25])
+{
+	int s = 1;
+	float t[25] = {0};
+	for (int i = 0; i < numRows; i++) {
+		for (int j = 0; j < numRows; j++) {
+			//To get cofactor of M[i][j]
+			Cofactor(M, t, i, j, numRows);
+			s = ((i + j) % 2 == 0) ? 1 : -1; //sign of adj[j][i] positive if sum of row and column indexes is even.
+			adj[j*numRows+i] = (s) * (RecursiveDet(t, numRows-1)); //Interchange rows and columns to get the transpose of the cofactor matrix
+		}
+	}
+}
+
+
 
 void KwanMat::add(const float value)
 {
@@ -149,44 +204,32 @@ KwanMat& KwanMat::operator*(const KwanMat& ref)
 }
 
 
-float KwanMat::Det()
+float KwanMat::DET()
 {
-	if (IsSquare(*this))
-		return false;
+	if (!IsSquare(*this))
+		throw std::runtime_error("Determinant is 0 or matrix is not square");
 
-	float det = 0;
 	//Laplace expansion
 	if (numRows == 1) return matNums[0];
-	else if (numRows == 2)
-	{
-		return matNums[0] * matNums[3] - matNums[1] * matNums[2];
-	}
-	else if (numRows == 3)
-	{
-		return matNums[0] * (matNums[4] * matNums[8] - matNums[5] * matNums[7])
-			- matNums[1] * (matNums[3] * matNums[8] - matNums[5] * matNums[6])
-			+ matNums[2] * (matNums[3] * matNums[7] - matNums[4] * matNums[6]);
-	}
+	else return RecursiveDet(matNums, numRows);
 }
 
 KwanMat& KwanMat::Inverse()
 {
-	float det = KwanMat::Det();
+	float det = KwanMat::DET();
 	if (det == 0) {
-		throw std::runtime_error("Determinant is 0 or matrix is not square");
+		throw std::runtime_error("Determinant is 0");
 	}
 	float dInv = 1 / det;
 	
-	if (numRows == 1) {
-		matNums[0] = dInv;
-	}
-	else
+	float tempMat[25] = { 0 };
+	float adj[25]; 
+	ADJ(matNums, adj);
+	for (int i = 0; i < numRows* numRows; i++)
+		tempMat[i] = adj[i] * dInv;
+	for (int k = 0; k < numRows * numRows; k++)
 	{
-		float arr[4] = { matNums[0],matNums[1], matNums[2], matNums[3] };
-		matNums[0] = matNums[3] / dInv;
-		matNums[1] = -matNums[1] / dInv;
-		matNums[2] = -matNums[2] / dInv;
-		matNums[3] = matNums[3] / dInv;
+		matNums[k] = tempMat[k];
 	}
 	return *this;
 }
