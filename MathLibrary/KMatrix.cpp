@@ -28,7 +28,7 @@ KwanMat::~KwanMat()
 float KwanMat::RecursiveDet(const float mat[25], const int n)
 {
 	float det = 0;
-	float submatrix[25];
+	float subMat[25];
 	if (n == 2)
 		return mat[0] * mat[3] - mat[1] * mat[2];
 	else {
@@ -39,12 +39,12 @@ float KwanMat::RecursiveDet(const float mat[25], const int n)
 				for (int j = 0; j < n; j++) {
 					if (j == x)
 						continue;
-					submatrix[subi*(n-1)+subj] = mat[i*n+j];
+					subMat[subi*(n-1)+subj] = mat[i*n+j];
 					subj++;
 				}
 				subi++;
 			}
-			det += x % 2 ? -mat[x] * RecursiveDet(submatrix, n - 1) : mat[x] * RecursiveDet(submatrix, n - 1);
+			det += x % 2 ? -mat[x] * RecursiveDet(subMat, n - 1) : mat[x] * RecursiveDet(subMat, n - 1);
 			//det = det + (pow(-1, x) * mat[x] * RecursiveDet(submatrix, n - 1));
 		}
 	}
@@ -140,8 +140,12 @@ KwanMat& KwanMat::MatMul(KwanMat& ref)
 
 KwanMat& KwanMat::T()
 {
+	//for general purpose
+	//float* tempNums = new float[numRows*numCols];
+
+	float tempNums[1024];
+
 	//copy temporally
-	float* tempNums = new float[numRows*numCols];
 	for (unsigned int i = 0; i < numRows * numCols; i++)
 		tempNums[i] = matNums[i];
 	for (unsigned int i = 0; i < numRows; i++)
@@ -151,7 +155,7 @@ KwanMat& KwanMat::T()
 			matNums[i*numCols+j] = tempNums[j * numCols + i];
 		}
 	}
-	delete[] tempNums;
+	//delete[] tempNums;
 
 	int tempN = numRows;
 	numRows = numCols;
@@ -222,15 +226,11 @@ KwanMat& KwanMat::Inverse()
 	}
 	float dInv = 1 / det;
 	
-	float tempMat[25] = { 0 };
 	float adj[25]; 
 	ADJ(matNums, adj);
 	for (int i = 0; i < numRows* numRows; i++)
-		tempMat[i] = adj[i] * dInv;
-	for (int k = 0; k < numRows * numRows; k++)
-	{
-		matNums[k] = tempMat[k];
-	}
+		matNums[i] = adj[i] * dInv;
+
 	return *this;
 }
 

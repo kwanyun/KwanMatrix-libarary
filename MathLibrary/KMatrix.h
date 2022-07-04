@@ -25,16 +25,16 @@ public:
     void mul(const float value);
     void div(const float value);
 
+    //memberwise calculation
+    KwanMat& operator+(const KwanMat& ref);
+    KwanMat& operator-(const KwanMat& ref);
+    KwanMat& operator*(const KwanMat& ref);
+
     //outer product
     KwanMat& MatMul(KwanMat& ref);
 
     //transpose
     KwanMat& T();
-
-    //memberwise calculation
-    KwanMat& operator+(const KwanMat& ref);
-    KwanMat& operator-(const KwanMat& ref);
-    KwanMat& operator*(const KwanMat& ref);
 
     //for advanced calculations
     //Calcualte determinant with Laplace expansion for genenral size of square matrice for less than 6
