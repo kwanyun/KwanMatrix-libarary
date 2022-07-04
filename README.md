@@ -1,9 +1,9 @@
 
-#matrix with 1d array based DLL.
+# matrix with 1d array based DLL.
 
 
 
-##ex) transpose implementation
+## ex) transpose implementation
 
 <pre>
 <code>
@@ -17,7 +17,7 @@ for (unsigned int i = 0; i < numRows; i++)
 </code>
 </pre>
 
-##ex) matrix multiplication
+## ex) matrix multiplication
 
 <pre>
 <code>
