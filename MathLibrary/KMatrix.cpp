@@ -171,12 +171,13 @@ KwanMat& KwanMat::operator+(const KwanMat& ref)
 	{
 		throw std::out_of_range("Size should be Same for + operation");
 	}
+	KwanMat* operatedMat = new KwanMat(numRows, numCols, 0);
 
 	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
-		matNums[i] += ref.matNums[i];
+		operatedMat->matNums[i] = ref.matNums[i]+ matNums[i];
 	}
-	return *this;
+	return *operatedMat;
 }
 
 KwanMat& KwanMat::operator-(const KwanMat& ref)
@@ -186,11 +187,12 @@ KwanMat& KwanMat::operator-(const KwanMat& ref)
 		throw std::out_of_range("Size should be Same for + operation");
 	}
 
+	KwanMat* operatedMat = new KwanMat(numRows, numCols,0);
 	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
-		matNums[i] -= ref.matNums[i];
+		operatedMat->matNums[i] = matNums[i] - ref.matNums[i];
 	}
-	return *this;
+	return *operatedMat;
 }
 
 KwanMat& KwanMat::operator*(const KwanMat& ref)
@@ -199,12 +201,13 @@ KwanMat& KwanMat::operator*(const KwanMat& ref)
 	{
 		throw std::out_of_range("Size should be Same for + operation");
 	}
+	KwanMat* operatedMat = new KwanMat(numRows, numCols, 0);
 
 	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
-		matNums[i] *= ref.matNums[i];
+		operatedMat->matNums[i] = matNums[i] * ref.matNums[i];
 	}
-	return *this;
+	return *operatedMat;
 }
 
 
