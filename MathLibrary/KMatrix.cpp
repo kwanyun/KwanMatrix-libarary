@@ -5,7 +5,7 @@
 
 
 //initialize. get 1D array and
-KwanMat::KwanMat(const int rows, const int cols, float matrices[]) : numRows(rows), numCols(cols) 
+explicit KwanMat::KwanMat(const int rows, const int cols, float matrices[]) : numRows(rows), numCols(cols)
 {
 	matNums = new float[numRows * numCols];
 	if (matrices == 0)
@@ -119,7 +119,7 @@ void KwanMat::div(const float value)
 }
 
 
-KwanMat& KwanMat::MatMul(KwanMat& ref)
+KwanMat& KwanMat::MatMul(const KwanMat& ref)
 {
 	if (numCols != ref.numRows)
 	{
@@ -165,49 +165,49 @@ KwanMat& KwanMat::T()
 }
 
 
-KwanMat& KwanMat::operator+(const KwanMat& ref)
+KwanMat& KwanMat::operator+(const KwanMat& ref) const
 {
 	if (numRows != ref.numRows || numCols != ref.numCols)
 	{
 		throw std::out_of_range("Size should be Same for + operation");
 	}
-	KwanMat* operatedMat = new KwanMat(numRows, numCols, 0);
-
+	std::shared_ptr<KwanMat> operatedMat = std::make_shared<KwanMat>(KwanMat(numRows, numCols, 0));
+	//KwanMat* operatedMat = new KwanMat(numRows, numCols, 0);
 	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
 		operatedMat->matNums[i] = ref.matNums[i]+ matNums[i];
 	}
-	return *operatedMat;
+	return *(operatedMat.get());
 }
 
-KwanMat& KwanMat::operator-(const KwanMat& ref)
+KwanMat& KwanMat::operator-(const KwanMat& ref) const
 {
 	if (numRows != ref.numRows || numCols != ref.numCols)
 	{
 		throw std::out_of_range("Size should be Same for + operation");
 	}
 
-	KwanMat* operatedMat = new KwanMat(numRows, numCols,0);
+	std::shared_ptr<KwanMat> operatedMat = std::make_shared<KwanMat>(KwanMat(numRows, numCols, 0));
 	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
 		operatedMat->matNums[i] = matNums[i] - ref.matNums[i];
 	}
-	return *operatedMat;
+	return *(operatedMat.get());
 }
 
-KwanMat& KwanMat::operator*(const KwanMat& ref)
+KwanMat& KwanMat::operator*(const KwanMat& ref) const
 {
 	if (numRows != ref.numRows || numCols != ref.numCols)
 	{
 		throw std::out_of_range("Size should be Same for + operation");
 	}
-	KwanMat* operatedMat = new KwanMat(numRows, numCols, 0);
-
+	//KwanMat* operatedMat = new KwanMat(numRows, numCols, 0);
+	std::shared_ptr<KwanMat> operatedMat = std::make_shared<KwanMat>(KwanMat(numRows, numCols, 0));
 	for (unsigned int i = 0; i < numRows * numCols; i++)
 	{
 		operatedMat->matNums[i] = matNums[i] * ref.matNums[i];
 	}
-	return *operatedMat;
+	return *(operatedMat.get());
 }
 
 
@@ -252,19 +252,19 @@ int KwanMat::getColumnSize()
 
 KwanMat& Identity(const unsigned int len)
 {
-	KwanMat* theMat = new KwanMat(len, len, 0);
+	std::shared_ptr<KwanMat> theMat = std::make_shared<KwanMat>(KwanMat(len, len , 0));
 
 	for (unsigned int i = 0; i < len; i++)
 	{
 		theMat->matNums[i*len+i] = 1;
 	}
-	return *theMat;
+	return *(theMat.get());
 }
 
 KwanMat& Zero(const unsigned int N, const unsigned int M)
 {
-	KwanMat* theMat = new KwanMat(N, M, 0);
-	return *theMat;
+	std::shared_ptr<KwanMat> theMat = std::make_shared<KwanMat>(KwanMat(N, M, 0));
+	return *(theMat.get());
 }
 
 KwanMat& Rotation2D(const float theta)
@@ -272,8 +272,8 @@ KwanMat& Rotation2D(const float theta)
 	float c = static_cast<float>(cos(theta));
 	float s = static_cast<float>(sin(theta));
 	float rotArr[4] = { c,-s,s,c };
-	KwanMat* rotMat = new KwanMat(2, 2, rotArr);
-	return *rotMat;
+	std::shared_ptr<KwanMat> rotMat = std::make_shared<KwanMat>(KwanMat(2,2, rotArr));
+	return *(rotMat.get());
 }
 
 KwanMat& Rotation3D(const float theta,const char axis)
@@ -297,8 +297,8 @@ KwanMat& Rotation3D(const float theta,const char axis)
 	{
 		throw std::out_of_range("axis should be x,y or z");
 	}
-	KwanMat* rotMat = new KwanMat(2, 2, rotArr);
-	return *rotMat;
+	std::shared_ptr<KwanMat> rotMat = std::make_shared<KwanMat>(KwanMat(3, 3, rotArr));
+	return *(rotMat.get());
 }
 
 bool IsSquare(const KwanMat& mat)

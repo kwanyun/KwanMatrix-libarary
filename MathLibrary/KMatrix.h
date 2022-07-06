@@ -16,7 +16,7 @@ public:
     float* matNums;
     unsigned int numRows, numCols;
 
-    KwanMat(const int rows, const int cols, float matrices[]);
+    explicit KwanMat(const int rows, const int cols, float matrices[]);
     ~KwanMat();
 
     //uniform calculation of float
@@ -26,12 +26,12 @@ public:
     void div(const float value);
 
     //memberwise calculation
-    KwanMat& operator+(const KwanMat& ref);
-    KwanMat& operator-(const KwanMat& ref);
-    KwanMat& operator*(const KwanMat& ref);
+    KwanMat& operator+(const KwanMat& ref) const;
+    KwanMat& operator-(const KwanMat& ref) const;
+    KwanMat& operator*(const KwanMat& ref) const;
 
     //outer product
-    KwanMat& MatMul(KwanMat& ref);
+    KwanMat& MatMul(const KwanMat& ref);
 
     //transpose
     KwanMat& T();
